@@ -1,0 +1,23 @@
+sudo: required
+language: generic
+services:
+  - docker
+
+before_install:
+  - docker build -t kumawatanupriya/client-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true kumawatanupriya/client-test npm run test -- --coverage
+
+after_success:
+  - docker build -t kumawatanupriya/client-container ./client
+  - docker build -t kumawatanupriya/nginx-container ./nginx
+  - docker build -t kumawatanupriya/server-container ./server
+  - docker build -t kumawatanupriya/worker-container ./worker
+
+  - echo "$DOCKER_POSSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  
+  - docker push kumawatanupriya/client-container
+  - docker push kumawatanupriya/nginx-container
+  - docker push kumawatanupriya/server-container
+  - docker push kumawatanupriya/worker-container
