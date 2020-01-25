@@ -21,3 +21,16 @@ after_success:
   - docker push kumawatanupriya/nginx-container
   - docker push kumawatanupriya/server-container
   - docker push kumawatanupriya/worker-container
+
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "multicontainer-react-app"
+  env: "MulticontainerReactApp-env"
+  bucket_name: "elasticbeanstalk-us-east-2-100826503292"
+  bucket_path: "multicontainer-react-app"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
